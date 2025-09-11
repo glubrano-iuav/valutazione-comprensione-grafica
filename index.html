@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Test di alfabetizzazione grafica — con tempi di risposta</title>
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --muted:#94a3b8; --fg:#e5e7eb; --accent:#22c55e; }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif; }
+    .container { max-width: 820px; margin: 0 auto; padding: 24px; }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; box-shadow: 0 8px 30px rgba(0,0,0,0.35); }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    p.lead { color: var(--muted); margin-top: 0; }
+    .question { display:none; }
+    .question.active { display:block; animation: fade .35s ease-out; }
+    @keyframes fade { from { opacity:0; transform: translateY(6px);} to { opacity:1; transform: translateY(0);} }
+    .q-title { font-size: 20px; margin: 10px 0 12px; }
+    .opts { display: grid; gap: 10px; margin: 12px 0; }
+    label.opt { display:flex; align-items:center; gap: 10px; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; cursor: pointer; }
+    label.opt:hover { border-color: rgba(255,255,255,0.25); }
+    .nav { display:flex; justify-content: space-between; gap: 12px; margin-top: 18px; }
+    button { appearance:none; border:0; border-radius: 12px; padding: 12px 16px; font-weight: 600; cursor:pointer; }
+    .btn { background: #1f2937; color: var(--fg); }
+    .btn.primary { background: var(--accent); color: #04130a; }
+    .btn[disabled] { opacity:.5; cursor:not-allowed; }
+    .progress { margin: 12px 0 18px; height: 10px; background: rgba(255,255,255,0.08); border-radius: 9999px; overflow:hidden; }
+    .bar { height:100%; width:0%; background: var(--accent); }
+    .muted { color: var(--muted); font-size: 14px; }
+    .hidden { display:none; }
+    input[type="text"], input[type="date"] { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: #0b1220; color: var(--fg); }
+    .placeholder { background:#0b1220; color:#94a3b8; padding:12px; border:1px dashed #334155; border-radius:12px; font-size:14px; }
+    footer { margin-top: 16px; text-align:center; color:var(--muted); font-size: 12px; }
+    .required { color:#fbbf24; font-weight:600; margin-left: 6px; font-size: 12px; letter-spacing:.02em;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Test di alfabetizzazione grafica</h1>
+      <p class="lead">Questionario con registrazione dei tempi di risposta per ogni domanda.</p>
+
+      <div class="progress" aria-hidden="true"><div id="bar" class="bar"></div></div>
+      <div class="muted" id="progressTxt">0% completato</div>
+
+      <form id="form">
+        <!-- Sezione iniziale e SEZIONE PRIVACY -->
+        <section class="question active" data-qid="intro">
+          <div class="q-title">Benvenut* 👋</div>
+          <p class="muted">Scarica l'informativa, leggila, firmala e caricala tramite il link esterno prima di iniziare il questionario. </p> Premi “Inizia” quando sei pront*; da quel momento partirà il timer totale. I tempi per singola domanda sono registrati in modo automatico quando selezioni una risposta o passi alla domanda successiva.</p>
+          <div style="margin:12px 0;">
+            <a href="privacy.pdf" download class="btn primary">Scarica privacy.pdf</a>
+          </div>
+          <div style="margin:12px 0;">
+            <a href="https://script.google.com/macros/s/AKfycbwIxzkw-eFTfEZt6vjvJLgymXRqzqWqpaPuNm18cb8EK1XJs78MJUhQcGsXZTrVWG6aSw/exec" target="_blank" class="muted">
+              Carica qui il file firmato e datato (link esterno)
+            </a>
+          </div>
+          <div class="nav">
+            <span></span>
+            <button type="button" class="btn primary" id="startBtn">Inizia</button>
+          </div>
+        </section>
+
+        <!-- 2. Genere alla nascita -->
+        <section class="question" data-qid="q_birth_sex">
+          <div class="q-title">Qual è il tuo genere alla nascita? <span class="required">*</span></div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q_birth_sex" value="maschile" required> Maschile</label>
+            <label class="opt"><input type="radio" name="q_birth_sex" value="femminile" required> Femminile</label>
+            <label class="opt"><input type="radio" name="q_birth_sex" value="preferisco_non_rispondere" required> Preferisco non rispondere</label>
+            <label class="opt"><input type="radio" name="q_birth_sex" value="altro" required> Altro</label>
+          </div>
+          <div class="nav">
+            <button type="button" class="btn" data-prev>Indietro</button>
+            <button type="button" class="btn primary" data-next>Avanti</button>
+          </div>
+        </section>
+
+        <!-- 3. Genere in cui ti identifichi -->
+        <section class="question" data-qid="q_gender_id">
+          <div class="q-title">Qual è il genere in cui ti identifichi? <span class="required">*</span></div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q_gender_id" value="maschile" required> Maschile</label>
+            <label class="opt"><input type="radio" name="q_gender_id" value="femminile" required> Femminile</label>
+            <label class="opt"><input type="radio" name="q_gender_id" value="preferisco_non_rispondere" required> Preferisco non rispondere</label>
+            <label class="opt"><input type="radio" name="q_gender_id" value="altro" required> Altro</label>
+          </div>
+          <div class="nav">
+            <button type="button" class="btn" data-prev>Indietro</button>
+            <button type="button" class="btn primary" data-next>Avanti</button>
+          </div>
+        </section>
+
+        <!-- 4. Livello di istruzione -->
+        <section class="question" data-qid="q_edu">
+          <div class="q-title">Qual è il tuo livello di istruzione? <span class="required">*</span></div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q_edu" value="licenza_elementare" required> Licenza elementare</label>
+            <label class="opt"><input type="radio" name="q_edu" value="licenza_media" required> Licenza media</label>
+            <label class="opt"><input type="radio" name="q_edu" value="qualifica_operatore_professionale" required> Qualifica di operatore professionale</label>
+            <label class="opt"><input type="radio" name="q_edu" value="diploma" required> Diploma</label>
+            <label class="opt"><input type="radio" name="q_edu" value="diploma_tecnico_superiore_ITS" required> Diploma di tecnico superiore (ITS)</label>
+            <label class="opt"><input type="radio" name="q_edu" value="laurea_triennale" required> Laurea triennale</label>
+            <label class="opt"><input type="radio" name="q_edu" value="laurea_magistrale" required> Laurea magistrale</label>
+            <label class="opt"><input type="radio" name="q_edu" value="dottorato" required> Dottorato</label>
+            <label class="opt"><input type="radio" name="q_edu" value="altro" required> Altro</label>
+          </div>
+          <div class="nav">
+            <button type="button" class="btn" data-prev>Indietro</button>
+            <button type="button" class="btn primary" data-next>Avanti</button>
+          </div>
+        </section>
+
+        <!-- 5. Area geografica -->
+        <section class="question" data-qid="q_area">
+          <div class="q-title">Qual è la tua area geografica di residenza? <span class="required">*</span></div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q_area" value="nord" required> Nord</label>
+            <label class="opt"><input type="radio" name="q_area" value="centro" required> Centro</label>
+            <label class="opt"><input type="radio" name="q_area" value="sud" required> Sud</label>
+            <label class="opt"><input type="radio" name="q_area" value="isole" required> Isole</label>
+            <label class="opt"><input type="radio" name="q_area" value="altro" required> Altro</label>
+          </div>
+          <div class="nav">
+            <button type="button" class="btn" data-prev>Indietro</button>
+            <button type="button" class="btn primary" data-next>Avanti</button>
+          </div>
+        </section>
+
+        <!-- 6. Dove vivi -->
+        <section class="question" data-qid="q_urban">
+          <div class="q-title">Dove vivi? <span class="required">*</span></div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q_urban" value="citta" required> Città</label>
+            <label class="opt"><input type="radio" name="q_urban" value="periferia_urbana" required> Periferia urbana</label>
+            <label class="opt"><input type="radio" name="q_urban" value="zona_rurale_campagna" required> Zona rurale / campagna</label>
+            <label class="opt"><input type="radio" name="q_urban" value="altro" required> Altro</label>
+          </div>
+          <div class="nav">
+            <button type="button" class="btn" data-prev>Indietro</button>
+            <button type="button" class="btn primary" data-next>Avanti</button>
+          </div>
+        </section>
+
+        <!-- 8 -->
+        <section class="question" data-qid="q8">
+          <div class="q-title">Qual è l’etichetta corrispondente alla barra più corta? <span class="required">*</span></div>
+          <img src="immagini/q8.png" alt="Grafico domanda 8" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q8" value="A" required> A</label>
+            <label class="opt"><input type="radio" name="q8" value="B" required> B</label>
+            <label class="opt"><input type="radio" name="q8" value="C" required> C</label>
+            <label class="opt"><input type="radio" name="q8" value="D" required> D</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 9 -->
+        <section class="question" data-qid="q9">
+          <div class="q-title">Qual è il valore mostrato in B? <span class="required">*</span></div>
+          <img src="immagini/q9.png" alt="Grafico domanda 9" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q9" value="0,03272939" required> 0,03272939</label>
+            <label class="opt"><input type="radio" name="q9" value="0,832378452" required> 0,832378452</label>
+            <label class="opt"><input type="radio" name="q9" value="0,514769246" required> 0,514769246</label>
+            <label class="opt"><input type="radio" name="q9" value="0,911316155" required> 0,911316155</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 10 -->
+        <section class="question" data-qid="q10">
+          <div class="q-title">A quale linea corrisponde una crescita netta? <span class="required">*</span></div>
+          <img src="immagini/q10.png" alt="Grafico domanda 10" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q10" value="A" required> A</label>
+            <label class="opt"><input type="radio" name="q10" value="B" required> B</label>
+            <label class="opt"><input type="radio" name="q10" value="C" required> C</label>
+            <label class="opt"><input type="radio" name="q10" value="D" required> D</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 11 -->
+        <section class="question" data-qid="q11">
+          <div class="q-title">A quale linea corrisponde il valore minimo più basso? <span class="required">*</span></div>
+          <img src="immagini/q11.png" alt="Grafico domanda 11" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q11" value="A" required> A</label>
+            <label class="opt"><input type="radio" name="q11" value="B" required> B</label>
+            <label class="opt"><input type="radio" name="q11" value="C" required> C</label>
+            <label class="opt"><input type="radio" name="q11" value="D" required> D</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 12 -->
+        <section class="question" data-qid="q12">
+          <div class="q-title">A quanto ammonta la differenza tra C in posizione 2 e B in posizione 4? <span class="required">*</span></div>
+          <img src="immagini/q12.png" alt="Grafico domanda 12" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q12" value="0.35" required> 0.35</label>
+            <label class="opt"><input type="radio" name="q12" value="0.25" required> 0.25</label>
+            <label class="opt"><input type="radio" name="q12" value="0" required> 0</label>
+            <label class="opt"><input type="radio" name="q12" value="0.5" required> 0.5</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 13 -->
+        <section class="question" data-qid="q13">
+          <div class="q-title">Dove si troverebbe la X se si spostasse di due lettere indietro e di un numero in avanti? <span class="required">*</span></div>
+          <img src="immagini/q13.png" alt="Grafico domanda 13" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q13" value="A3" required> A3</label>
+            <label class="opt"><input type="radio" name="q13" value="B4" required> B4</label>
+            <label class="opt"><input type="radio" name="q13" value="C2" required> C2</label>
+            <label class="opt"><input type="radio" name="q13" value="D1" required> D1</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 14 -->
+        <section class="question" data-qid="q14">
+          <div class="q-title">Se A si muovesse nella posizione di B e B in quella di A e il grafico ruotasse di 180°, quale spicchio di torta coprirebbe l'asticella tra A e D? <span class="required">*</span></div>
+          <img src="immagini/q14.png" alt="Grafico domanda 14" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q14" value="A" required> A</label>
+            <label class="opt"><input type="radio" name="q14" value="B" required> B</label>
+            <label class="opt"><input type="radio" name="q14" value="C" required> C</label>
+            <label class="opt"><input type="radio" name="q14" value="D" required> D</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 15 -->
+        <section class="question" data-qid="q15">
+          <div class="q-title">Nei due grafici innestati quale è il valore che rimane uguale? <span class="required">*</span></div>
+          <img src="immagini/q15.png" alt="Grafico domanda 15" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q15" value="A" required> A</label>
+            <label class="opt"><input type="radio" name="q15" value="B" required> B</label>
+            <label class="opt"><input type="radio" name="q15" value="C" required> C</label>
+            <label class="opt"><input type="radio" name="q15" value="D" required> D</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 16 -->
+        <section class="question" data-qid="q16">
+          <div class="q-title">In quale punto la linea B differisce sostanzialmente dalla linea D? <span class="required">*</span></div>
+          <img src="immagini/q16.png" alt="Grafico domanda 16" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q16" value="1" required> 1</label>
+            <label class="opt"><input type="radio" name="q16" value="2" required> 2</label>
+            <label class="opt"><input type="radio" name="q16" value="3" required> 3</label>
+            <label class="opt"><input type="radio" name="q16" value="4" required> 4</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 17 -->
+        <section class="question" data-qid="q17">
+          <div class="q-title">Di quanto sono diminuite le vendite da gennaio a marzo per il prodotto C? <span class="required">*</span></div>
+          <img src="immagini/q17.png" alt="Grafico domanda 17" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q17" value="1,1345756" required> 1,1345756</label>
+            <label class="opt"><input type="radio" name="q17" value="0,2117303" required> 0,2117303</label>
+            <label class="opt"><input type="radio" name="q17" value="0,0645674" required> 0,0645674</label>
+            <label class="opt"><input type="radio" name="q17" value="0,6714647" required> 0,6714647</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 18 -->
+        <section class="question" data-qid="q18">
+          <div class="q-title">Qual è il trend complessivo del valore di A + B nel corso del tempo? <span class="required">*</span></div>
+          <img src="immagini/q18.png" alt="Grafico domanda 18" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q18" value="aumenta" required> Aumenta</label>
+            <label class="opt"><input type="radio" name="q18" value="costante" required> Costante</label>
+            <label class="opt"><input type="radio" name="q18" value="altalenante" required> Altalenante</label>
+            <label class="opt"><input type="radio" name="q18" value="diminuisce" required> Diminuisce</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 19 -->
+        <section class="question" data-qid="q19">
+          <div class="q-title">Dati i 4 campionamenti della temperatura in diversi luoghi, cosa si può dedurre sulla temperatura media nel tempo? <span class="required">*</span></div>
+          <img src="immagini/q19.png" alt="Grafico domanda 19" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q19" value="aumenta" required> Aumenta</label>
+            <label class="opt"><input type="radio" name="q19" value="costante" required> Costante</label>
+            <label class="opt"><input type="radio" name="q19" value="altalenante" required> Altalenante</label>
+            <label class="opt"><input type="radio" name="q19" value="diminuisce" required> Diminuisce</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button><button type="button" class="btn primary" data-next>Avanti</button></div>
+        </section>
+
+        <!-- 20 -->
+        <section class="question" data-qid="q20">
+          <div class="q-title">QUESTA E' L'ULTIMA DOMANDA, PER FAVORE DOPO AVER RISPOSTO CLICCA UNA SOLA VOLTA SU INVIA PER EVITARE CHE LA RISPOSTA VENGA REGISTRATA PIU' DI UNA VOLTA. I dati aggregati del traffico nelle diverse regioni sono in tabella: cosa consigli ai manager aziendali di fare nella regione A? <span class="required">*</span></div>
+          <img src="immagini/q20.png" alt="Grafico domanda 20" style="max-width:100%;border-radius:12px;margin:12px 0;">
+          <div class="opts">
+            <label class="opt"><input type="radio" name="q20" value="aumentare_feb_dim_gen" required> Aumentare smart working a febbraio e diminuirlo a gennaio</label>
+            <label class="opt"><input type="radio" name="q20" value="costante_feb_gen" required> Far rimanere costante lo smart working a febbraio e gennaio</label>
+            <label class="opt"><input type="radio" name="q20" value="dim_feb_aum_gen" required> Diminuire lo smart working a febbraio e aumentarlo a gennaio</label>
+            <label class="opt"><input type="radio" name="q20" value="dim_mar_apr" required> Diminuire lo smart working a marzo e aprile</label>
+          </div>
+          <div class="nav"><button type="button" class="btn" data-prev>Indietro</button>
+            <button type="submit" class="btn primary">Invia</button></div>
+        </section>
+
+        <!-- Grazie -->
+        <section class="question" data-qid="thanks">
+          <div class="q-title">Grazie! 🎉</div>
+          <p class="muted">Le tue risposte sono state registrate. Puoi chiudere la pagina.</p>
+        </section>
+      </form>
+
+      <footer>
+        <div id="timerTotal" class="muted"></div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // === CONFIGURA QUI l'endpoint della tua Web App di Google Apps Script ===
+    const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbzgmnmtZF-AFGXws-Xlw1UwKOekGi2OW1oBCoi_48eX3LEmuxelMzSfH4YRsPP-A0PIiw/exec"; // es: https://script.google.com/macros/s/AKfycb.../exec
+
+    const form = document.getElementById("form");
+    const questions = Array.from(document.querySelectorAll(".question"));
+    const startBtn = document.getElementById("startBtn");
+    const bar = document.getElementById("bar");
+    const progressTxt = document.getElementById("progressTxt");
+    const timerTotal = document.getElementById("timerTotal");
+// 🔹 Legge il token dall’URL (?token=XYZ123)
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token") || "";
+
+    let idx = 0; // indice domanda corrente
+    let startedAt = null;
+    let finishedAt = null;
+
+    // timing per domanda
+    const qEnter = {};   // quando la domanda è diventata visibile
+    const qTime = {};    // durata in secondi per domanda (prima risposta o "Avanti")
+    const answered = {}; // flag
+
+    // Utility per mostrare domanda
+    function show(i) {
+      questions.forEach(q => q.classList.remove("active"));
+      const q = questions[i];
+      if (q) {
+        q.classList.add("active");
+        const qid = q.dataset.qid;
+        if (!qEnter[qid]) qEnter[qid] = Date.now();
+        updateProgress();
+      }
+    }
+
+    function updateProgress() {
+      const totalQ = questions.length - 2; // esclude intro & thanks
+      const current = Math.min(idx, totalQ);
+      const perc = Math.round((current / totalQ) * 100);
+      bar.style.width = perc + "%";
+      progressTxt.textContent = perc + "% completato";
+    }
+
+    // Start
+    startBtn?.addEventListener("click", () => {
+      startedAt = Date.now();
+      idx = 1; // salta intro
+      show(idx);
+    });
+
+    // Nav avanti/indietro
+    form.addEventListener("click", (e) => {
+      const target = e.target;
+      if (target.matches("[data-next]")) {
+        // Se la domanda è required, verifica
+        const section = questions[idx];
+        const requiredInputs = section.querySelectorAll("input[required]");
+        let ok = true;
+        requiredInputs.forEach(inp => {
+          if (inp.type === "radio") {
+            const name = inp.name;
+            if (!section.querySelector('input[name="' + name + '"]:checked')) ok = false;
+          } else if (!inp.value) ok = false;
+        });
+        if (!ok) {
+          alert("Per favore rispondi prima di procedere.");
+          return;
+        }
+
+        // salva tempo se non già salvato
+        const qid = section.dataset.qid;
+        if (!qTime[qid]) qTime[qid] = (Date.now() - qEnter[qid]) / 1000;
+
+        idx = Math.min(idx + 1, questions.length - 1);
+        show(idx);
+      }
+      if (target.matches("[data-prev]")) {
+        idx = Math.max(idx - 1, 1);
+        show(idx);
+      }
+    });
+
+    // Registra il momento della risposta (prima risposta vale come tempo)
+    document.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('change', (e) => {
+        const section = e.target.closest('.question');
+        if (!section) return;
+        const qid = section.dataset.qid;
+        if (!qTime[qid]) {
+          qTime[qid] = (Date.now() - qEnter[qid]) / 1000;
+        }
+      });
+    });
+
+    // Submit
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      finishedAt = Date.now();
+
+      // Ultima domanda: assicurati di scrivere il tempo se non già presente
+      const lastQ = questions[idx];
+      if (lastQ) {
+        const qid = lastQ.dataset.qid;
+        if (qEnter[qid] && !qTime[qid]) qTime[qid] = (Date.now() - qEnter[qid]) / 1000;
+      }
+
+      // Costruisci payload risposte + tempi
+      const formData = new FormData(form);
+      const data = {};
+      for (const [k, v] of formData.entries()) data[k] = v;
+
+      // aggiungi tempi per ogni qid (solo per le reali domande)
+      questions.forEach(sec => {
+        const qid = sec.dataset.qid;
+        if (qid && !["intro","thanks"].includes(qid)) {
+          data["time_" + qid] = qTime[qid] ? Number(qTime[qid].toFixed(3)) : "";
+        }
+      });
+
+      data.startedAt = new Date(startedAt).toISOString();
+      data.finishedAt = new Date(finishedAt).toISOString();
+      data.totalTimeSec = Number(((finishedAt - startedAt) / 1000).toFixed(3));
+      data.userAgent = navigator.userAgent;
+      data.screen = { w: window.innerWidth, h: window.innerHeight };
+      data.token = token;
+
+      // Invia a Google Apps Script (modalità no-cors per semplicità)
+      try {
+        await fetch(ENDPOINT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+    
+        });
+      } catch (err) {
+        console.error("Errore invio:", err);
+      }
+
+      // mostra schermata di ringraziamento
+      idx = questions.length - 1;
+      show(idx);
+      timerTotal.textContent = "Tempo totale: " + data.totalTimeSec + " s";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+// Inizializza
+    show(idx);
+  </script>
+</body>
+</html>
