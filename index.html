@@ -42,35 +42,26 @@
       <div class="progress" aria-hidden="true"><div id="bar" class="bar"></div></div>
       <div class="muted" id="progressTxt">0% completato</div>
 
-<form id="form">
-  <!-- Sezione iniziale e SEZIONE PRIVACY -->
-  <section class="question active" data-qid="intro">
-    <div class="q-title">Benvenut* 👋</div>
+      <form id="form">
+        <!-- Sezione iniziale -->
+        <section class="question active" data-qid="intro">
+          <div class="q-title">Benvenut* 👋</div>
+          <p class="muted">Premi “Inizia” quando sei pront*; da quel momento partirà il timer totale. I tempi per singola domanda sono registrati in modo automatico quando selezioni una risposta o passi alla domanda successiva.</p>
+          <div class="nav">
+            <span></span>
+            <button type="button" class="btn primary" id="startBtn">Inizia</button>
+          </div>
+        </section>
 
-    <p class="muted">
-      Scarica l'informativa, leggila, firmala e caricala tramite il link esterno prima di iniziare il questionario. 
-      Premi “Inizia” quando sei pront*; da quel momento partirà il timer totale. 
-      I tempi per singola domanda sono registrati in modo automatico quando selezioni una risposta o passi alla domanda successiva.
-    </p>
-
-    <div class="actions" style="margin:12px 0;">
-      <a href="privacy.pdf" download class="btn primary">📄 Scarica privacy.pdf</a>
-    </div>
-
-    <div class="actions" style="margin:12px 0;">
-      <a href="https://script.google.com/macros/s/AKfycbwIxzkw-eFTfEZt6vjvJLgymXRqzqWqpaPuNm18cb8EK1XJs78MJUhQcGsXZTrVWG6aSw/exec" 
-         target="_blank" class="btn secondary">
-        ⬆️ Carica file firmato (link esterno)
-      </a>
-    </div>
-
-    <div class="nav">
-      <span></span>
-      <button type="button" class="btn primary" id="startBtn">Inizia</button>
-    </div>
-  </section>
-</form>
-
+        <!-- 1. Data di nascita -->
+        <section class="question" data-qid="q_dob">
+          <div class="q-title">Qual è la tua data di nascita? <span class="required">* obbligatoria</span></div>
+          <input type="date" name="q_dob" required />
+          <div class="nav">
+            <button type="button" class="btn" data-prev>Indietro</button>
+            <button type="button" class="btn primary" data-next>Avanti</button>
+          </div>
+        </section>
 
         <!-- 2. Genere alla nascita -->
         <section class="question" data-qid="q_birth_sex">
@@ -338,7 +329,7 @@
 
   <script>
     // === CONFIGURA QUI l'endpoint della tua Web App di Google Apps Script ===
-    const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbzgmnmtZF-AFGXws-Xlw1UwKOekGi2OW1oBCoi_48eX3LEmuxelMzSfH4YRsPP-A0PIiw/exec"; // es: https://script.google.com/macros/s/AKfycb.../exec
+    const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycby8kE-tfXOX2yNINOFbcwEnSBopJsHNpGSg5Lm6dyH7dPEx7WQCFZNs6EJiOO9rQXt4EQ/exec"; // es: https://script.google.com/macros/s/AKfycb.../exec
 
     const form = document.getElementById("form");
     const questions = Array.from(document.querySelectorAll(".question"));
