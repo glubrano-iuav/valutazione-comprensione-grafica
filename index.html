@@ -42,24 +42,35 @@
       <div class="progress" aria-hidden="true"><div id="bar" class="bar"></div></div>
       <div class="muted" id="progressTxt">0% completato</div>
 
-      <form id="form">
-        <!-- Sezione iniziale e SEZIONE PRIVACY -->
-        <section class="question active" data-qid="intro">
-          <div class="q-title">Benvenut* 👋</div>
-          <p class="muted">Scarica l'informativa, leggila, firmala e caricala tramite il link esterno prima di iniziare il questionario. </p> Premi “Inizia” quando sei pront*; da quel momento partirà il timer totale. I tempi per singola domanda sono registrati in modo automatico quando selezioni una risposta o passi alla domanda successiva.</p>
-          <div style="margin:12px 0;">
-            <a href="privacy.pdf" download class="btn primary">Scarica privacy.pdf</a>
-          </div>
-          <div style="margin:12px 0;">
-            <a href="https://script.google.com/macros/s/AKfycbwIxzkw-eFTfEZt6vjvJLgymXRqzqWqpaPuNm18cb8EK1XJs78MJUhQcGsXZTrVWG6aSw/exec" target="_blank" class="muted">
-              Carica qui il file firmato e datato (link esterno)
-            </a>
-          </div>
-          <div class="nav">
-            <span></span>
-            <button type="button" class="btn primary" id="startBtn">Inizia</button>
-          </div>
-        </section>
+<form id="form">
+  <!-- Sezione iniziale e SEZIONE PRIVACY -->
+  <section class="question active" data-qid="intro">
+    <div class="q-title">Benvenut* 👋</div>
+
+    <p class="muted">
+      Scarica l'informativa, leggila, firmala e caricala tramite il link esterno prima di iniziare il questionario. 
+      Premi “Inizia” quando sei pront*; da quel momento partirà il timer totale. 
+      I tempi per singola domanda sono registrati in modo automatico quando selezioni una risposta o passi alla domanda successiva.
+    </p>
+
+    <div class="actions" style="margin:12px 0;">
+      <a href="privacy.pdf" download class="btn primary">📄 Scarica privacy.pdf</a>
+    </div>
+
+    <div class="actions" style="margin:12px 0;">
+      <a href="https://script.google.com/macros/s/AKfycbwIxzkw-eFTfEZt6vjvJLgymXRqzqWqpaPuNm18cb8EK1XJs78MJUhQcGsXZTrVWG6aSw/exec" 
+         target="_blank" class="btn secondary">
+        ⬆️ Carica file firmato (link esterno)
+      </a>
+    </div>
+
+    <div class="nav">
+      <span></span>
+      <button type="button" class="btn primary" id="startBtn">Inizia</button>
+    </div>
+  </section>
+</form>
+
 
         <!-- 2. Genere alla nascita -->
         <section class="question" data-qid="q_birth_sex">
